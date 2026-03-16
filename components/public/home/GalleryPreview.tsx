@@ -1,12 +1,13 @@
+import Image from "next/image";
 import Link from "next/link";
 
-const placeholders = [
-  { id: 1, span: "row-span-2", aspect: "aspect-[3/4]", label: "Interieur du restaurant" },
-  { id: 2, span: "", aspect: "aspect-square", label: "Plat signature" },
-  { id: 3, span: "", aspect: "aspect-square", label: "Ambiance soiree" },
-  { id: 4, span: "row-span-2", aspect: "aspect-[3/4]", label: "Vue sur la baie" },
-  { id: 5, span: "", aspect: "aspect-square", label: "Le chef en cuisine" },
-  { id: 6, span: "", aspect: "aspect-square", label: "Terrasse" },
+const photos = [
+  { src: "/images/portrait/photo-03.jpeg", alt: "Interieur du restaurant", span: "row-span-2" },
+  { src: "/images/portrait/photo-04.jpeg", alt: "Plat signature", span: "" },
+  { src: "/images/portrait/photo-05.jpeg", alt: "Ambiance soiree", span: "" },
+  { src: "/images/portrait/photo-06.jpeg", alt: "Vue sur la baie", span: "row-span-2" },
+  { src: "/images/portrait/photo-07.jpeg", alt: "Le chef en cuisine", span: "" },
+  { src: "/images/portrait/photo-08.jpeg", alt: "Terrasse", span: "" },
 ];
 
 export default function GalleryPreview() {
@@ -22,16 +23,21 @@ export default function GalleryPreview() {
           </h2>
         </div>
 
-        {/* Grille masonry-like avec CSS grid */}
         <div className="mt-12 grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4">
-          {placeholders.map((item) => (
+          {photos.map((photo) => (
             <div
-              key={item.id}
-              className={`${item.span} overflow-hidden rounded-sm bg-primary/5 ${item.aspect}`}
+              key={photo.src}
+              className={`${photo.span} relative overflow-hidden rounded-sm ${
+                photo.span ? "aspect-[3/4]" : "aspect-square"
+              }`}
             >
-              <div className="flex h-full w-full items-center justify-center p-4">
-                <p className="text-center text-xs text-text-muted">{item.label}</p>
-              </div>
+              <Image
+                src={photo.src}
+                alt={photo.alt}
+                fill
+                className="object-cover transition-transform duration-500 hover:scale-105"
+                sizes="(max-width: 768px) 50vw, 33vw"
+              />
             </div>
           ))}
         </div>

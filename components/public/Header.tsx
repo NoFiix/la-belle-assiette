@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import Link from "next/link";
 
 const navLinks = [
@@ -45,11 +46,15 @@ export default function Header() {
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 lg:px-8">
         {/* Logo */}
-        <Link
-          href="/"
-          className="font-heading text-2xl font-bold tracking-wide text-primary lg:text-3xl"
-        >
-          La Belle Assiette
+        <Link href="/" className="shrink-0">
+          <Image
+            src="/images/logo/Logo_la-belle-assiette.jpg"
+            alt="La Belle Assiette"
+            width={150}
+            height={50}
+            priority
+            className="h-[40px] w-auto lg:h-[50px]"
+          />
         </Link>
 
         {/* Navigation desktop */}

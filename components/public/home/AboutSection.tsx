@@ -1,17 +1,19 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export default function AboutSection() {
   return (
     <section className="bg-primary px-5 py-16 lg:px-8 lg:py-24">
       <div className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-2 lg:gap-16">
-        {/* Placeholder visuel */}
-        <div className="aspect-[4/3] rounded-sm bg-primary-light lg:aspect-square">
-          <div className="flex h-full w-full items-center justify-center">
-            <div className="text-center">
-              <div className="mx-auto h-16 w-16 rounded-full border border-white/20" />
-              <p className="mt-4 text-sm text-white/30">Photo du restaurant</p>
-            </div>
-          </div>
+        {/* Photo */}
+        <div className="relative aspect-[4/3] overflow-hidden rounded-sm lg:aspect-square">
+          <Image
+            src="/images/portrait/photo-02.jpeg"
+            alt="Interieur du restaurant La Belle Assiette"
+            fill
+            className="object-cover"
+            sizes="(max-width: 1024px) 100vw, 50vw"
+          />
         </div>
 
         {/* Texte */}
