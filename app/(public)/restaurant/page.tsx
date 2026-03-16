@@ -1,38 +1,5 @@
 import Image from "next/image";
 
-const values = [
-  {
-    title: "Authenticite",
-    desc: "Des recettes traditionnelles transmises de generation en generation, preparees avec respect.",
-    icon: (
-      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-accent mx-auto mb-4">
-        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-      </svg>
-    ),
-  },
-  {
-    title: "Excellence",
-    desc: "Des ingredients selectionnes avec soin, un savoir-faire culinaire rigoureux, une presentation soignee.",
-    icon: (
-      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-accent mx-auto mb-4">
-        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-      </svg>
-    ),
-  },
-  {
-    title: "Convivialite",
-    desc: "Un lieu de partage et de rencontre ou chaque convive est accueilli comme un membre de la famille.",
-    icon: (
-      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-accent mx-auto mb-4">
-        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-        <circle cx="9" cy="7" r="4" />
-        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-      </svg>
-    ),
-  },
-];
-
 export default function RestaurantPage() {
   return (
     <>
@@ -41,7 +8,7 @@ export default function RestaurantPage() {
         <div className="max-w-6xl mx-auto">
           <div className="relative aspect-video rounded-xl overflow-hidden">
             <Image
-              src="/images/portrait/photo-12.jpeg"
+              src="/images/restau-01.jpg"
               alt="Vue panoramique du restaurant"
               fill
               priority
@@ -76,7 +43,7 @@ export default function RestaurantPage() {
         </div>
         <div className="relative aspect-[3/4] rounded-xl overflow-hidden">
           <Image
-            src="/images/portrait/photo-09.jpeg"
+            src="/images/restau-04.jpg"
             alt="Interieur du restaurant"
             fill
             className="object-cover"
@@ -106,7 +73,7 @@ export default function RestaurantPage() {
       <section className="max-w-5xl mx-auto px-6 py-20 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         <div className="relative aspect-video rounded-xl overflow-hidden">
           <Image
-            src="/images/portrait/photo-20.jpeg"
+            src="/images/restau-11.jpeg"
             alt="Ambiance musicale"
             fill
             className="object-cover"
@@ -127,23 +94,6 @@ export default function RestaurantPage() {
               l&apos;ambiance unique de nos evenements.
             </p>
           </div>
-        </div>
-      </section>
-
-      {/* Valeurs */}
-      <section className="bg-primary text-white py-20 px-6">
-        <div className="max-w-5xl mx-auto text-center mb-14">
-          <span className="eyebrow text-accent mb-3 block">CE QUI NOUS ANIME</span>
-          <h2 className="heading-section text-white">Nos Valeurs</h2>
-        </div>
-        <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
-          {values.map((v) => (
-            <div key={v.title} className="text-center">
-              {v.icon}
-              <h3 className="font-serif text-xl mb-3">{v.title}</h3>
-              <p className="text-sm text-white/60 leading-relaxed">{v.desc}</p>
-            </div>
-          ))}
         </div>
       </section>
     </>

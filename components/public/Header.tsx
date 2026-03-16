@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
 
 const navLinks = [
@@ -50,17 +49,11 @@ export default function Header() {
         className={`h-20 flex items-center justify-between px-6 md:px-8 fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${headerBg}`}
       >
         {/* Logo */}
-        <Link href="/" className="shrink-0">
-          <Image
-            src="/images/logo/Logo_la-belle-assiette.jpg"
-            alt="La Belle Assiette"
-            width={150}
-            height={50}
-            priority
-            className={`h-[40px] w-auto lg:h-[50px] rounded-sm transition-all duration-300 ${
-              !hasBg ? "brightness-[10] contrast-50" : ""
-            }`}
-          />
+        <Link
+          href="/"
+          className={`font-serif text-2xl md:text-[26px] font-light tracking-tight transition-colors duration-300 ${textColor}`}
+        >
+          La Belle Assiette
         </Link>
 
         {/* Desktop nav */}

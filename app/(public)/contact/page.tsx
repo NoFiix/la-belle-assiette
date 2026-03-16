@@ -18,7 +18,11 @@ export default function ContactPage() {
               </svg>
               <div>
                 <p className="font-medium mb-1">Adresse</p>
-                <p className="text-sm text-text-muted">Port La Pecherie, Alger, Algerie</p>
+                <p className="text-sm text-text-muted">
+                  62 Quai Sud Alger, Port La Pecherie,
+                  <br />
+                  Casbah 16000, Algerie
+                </p>
               </div>
             </div>
 
@@ -60,16 +64,12 @@ export default function ContactPage() {
                 <table className="text-sm text-text-muted">
                   <tbody>
                     <tr>
-                      <td className="pr-8 py-1">Lundi — Jeudi</td>
+                      <td className="pr-8 py-1">Lundi — Samedi</td>
                       <td>11h — 23h</td>
                     </tr>
                     <tr>
                       <td className="pr-8 py-1">Vendredi</td>
                       <td>17h — 23h</td>
-                    </tr>
-                    <tr>
-                      <td className="pr-8 py-1">Samedi</td>
-                      <td>11h — 23h</td>
                     </tr>
                     <tr>
                       <td className="pr-8 py-1">Dimanche</td>
@@ -104,25 +104,28 @@ export default function ContactPage() {
           </div>
         </div>
 
-        {/* Map placeholder */}
-        <div>
-          <div className="image-placeholder aspect-square rounded-xl flex items-center justify-center">
-            <div className="text-center">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="mx-auto mb-3 text-text-muted">
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                <circle cx="12" cy="10" r="3" />
-              </svg>
-              <p className="text-sm text-text-muted mb-4">Carte interactive</p>
-              <a
-                href="https://maps.google.com/?q=Port+La+Pecherie+Alger"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-gold text-[13px] py-2 px-4"
-              >
-                Voir sur Google Maps
-              </a>
-            </div>
+        {/* Google Maps */}
+        <div className="space-y-4">
+          <div className="aspect-square rounded-xl overflow-hidden">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3197.2!2d3.0594!3d36.7866!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x128fb262e1e1e1e1%3A0x1!2s62+Quai+Sud%2C+Casbah+16000%2C+Alger!5e0!3m2!1sfr!2sdz!4v1"
+              width="100%"
+              height="100%"
+              style={{ border: 0 }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="La Belle Assiette - Google Maps"
+            />
           </div>
+          <a
+            href="https://www.google.com/maps/dir/?api=1&destination=62+Quai+Sud+Alger,+Casbah+16000,+Algerie"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-gold text-center block"
+          >
+            Obtenir l&apos;itineraire
+          </a>
         </div>
       </section>
     </>

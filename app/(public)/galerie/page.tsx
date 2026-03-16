@@ -4,19 +4,37 @@ import { useState } from "react";
 import Image from "next/image";
 
 const photos = [
-  { src: "/images/portrait/photo-09.jpeg", alt: "Interieur du restaurant", h: 280 },
-  { src: "/images/portrait/photo-10.jpeg", alt: "Escalier dore", h: 340 },
-  { src: "/images/portrait/photo-11.jpeg", alt: "Enseigne neon", h: 300 },
-  { src: "/images/portrait/photo-12.jpeg", alt: "Salle principale", h: 260 },
-  { src: "/images/portrait/photo-13.jpeg", alt: "Salon velours rouge", h: 320 },
-  { src: "/images/portrait/photo-18.jpeg", alt: "Espaces du restaurant", h: 280 },
-  { src: "/images/portrait/photo-19.jpeg", alt: "Salles colorees", h: 300 },
-  { src: "/images/portrait/photo-20.jpeg", alt: "Lustre et ambiance", h: 360 },
-  { src: "/images/portrait/photo-21.jpeg", alt: "Coin intime", h: 250 },
-  { src: "/images/portrait/photo-24.jpeg", alt: "Detail table fleurie", h: 290 },
-  { src: "/images/portrait/photo-27.jpeg", alt: "Decoration hamsa", h: 310 },
-  { src: "/images/portrait/photo-28.jpeg", alt: "Clients attables", h: 270 },
+  { src: "/images/restau-01.jpg", alt: "Salle et escalier dore" },
+  { src: "/images/restau-02.jpg", alt: "Enseigne neon et arche fleurie" },
+  { src: "/images/restau-03.jpg", alt: "Ambiance feutree" },
+  { src: "/images/restau-04.jpg", alt: "Coin lounge orange" },
+  { src: "/images/restau-06.jpeg", alt: "Detail decoration" },
+  { src: "/images/restau-07.jpeg", alt: "Terrasse interieure" },
+  { src: "/images/restau-10.jpeg", alt: "Salle principale" },
+  { src: "/images/restau-11.jpeg", alt: "Ambiance musicale" },
+  { src: "/images/restau-12.jpeg", alt: "Tables dressees" },
+  { src: "/images/restau-13.jpeg", alt: "Espace VIP" },
+  { src: "/images/restau-14.jpeg", alt: "Mur decoratif" },
+  { src: "/images/restau-15.jpeg", alt: "Vue d'ensemble" },
+  { src: "/images/restau-16.jpeg", alt: "Coin intime" },
+  { src: "/images/restau-17.jpeg", alt: "Luminaires design" },
+  { src: "/images/restau-18.jpeg", alt: "Detail table" },
+  { src: "/images/restau-19.jpeg", alt: "Fauteuils colores" },
+  { src: "/images/restau-20.jpeg", alt: "Decoration murale" },
+  { src: "/images/restau-21.jpeg", alt: "Comptoir et vitrine" },
+  { src: "/images/restau-22.jpeg", alt: "Arche decorative" },
+  { src: "/images/restau-23.jpeg", alt: "Chaises et motifs" },
+  { src: "/images/restau-24.jpeg", alt: "Vue panoramique" },
+  { src: "/images/restau-25.jpeg", alt: "Mosaiques au sol" },
+  { src: "/images/restau-26.jpeg", alt: "Banquette velours" },
+  { src: "/images/restau-27.jpeg", alt: "Vue nocturne" },
+  { src: "/images/plat-07.jpg", alt: "Plat gastronomique" },
+  { src: "/images/plat-08.jpeg", alt: "Presentation culinaire" },
+  { src: "/images/plat-09.jpeg", alt: "Dessert du chef" },
+  { src: "/images/plat-10.jpeg", alt: "Assiette raffinee" },
 ];
+
+const heights = [280, 340, 300, 260, 320, 280, 300, 360, 250, 290, 310, 270, 280, 340, 300, 260, 320, 280, 300, 360, 250, 290, 310, 270, 280, 340, 300, 260];
 
 export default function GalleryPage() {
   const [lightbox, setLightbox] = useState<number | null>(null);
@@ -35,7 +53,7 @@ export default function GalleryPage() {
             <div
               key={photo.src}
               className="break-inside-avoid rounded-lg overflow-hidden cursor-pointer group relative"
-              style={{ height: photo.h }}
+              style={{ height: heights[i % heights.length] }}
               onClick={() => setLightbox(i)}
             >
               <Image
