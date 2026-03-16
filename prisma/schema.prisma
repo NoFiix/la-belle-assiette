@@ -1,0 +1,121 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+}
+
+// ─────────────────────────────────────────
+// ADMIN
+// ─────────────────────────────────────────
+
+model AdminUser {
+  id            Int      @id @default(autoincrement())
+  email         String   @unique
+  password_hash String
+  role          String   @default("admin")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────
+// MENU
+// ─────────────────────────────────────────
+
+model MenuCategory {
+  id        Int        @id @default(autoincrement())
+  name      String
+  order     Int        @default(0)
+  isVisible Boolean    @default(true)
+  items     MenuItem[]
+  createdAt DateTime   @default(now())
+}
+
+model MenuItem {
+  id          Int          @id @default(autoincrement())
+  name        String
+  description String?
+  price       String?
+  badge       MenuBadge?
+  isVisible   Boolean      @default(true)
+  category    MenuCategory @relation(fields: [categoryId], references: [id])
+  categoryId  Int
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+enum MenuBadge {
+  NOUVEAU
+  CHEF
+}
+
+// ─────────────────────────────────────────
+// ÉVÉNEMENTS
+// ─────────────────────────────────────────
+
+model Event {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  date        DateTime
+  time        String?
+  imageUrl    String?
+  ctaLabel    String   @default("Réserver pour cet événement")
+  isActive    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────
+// RÉSERVATIONS
+// ─────────────────────────────────────────
+
+model Reservation {
+  id        Int               @id @default(autoincrement())
+  name      String
+  phone     String
+  email     String?
+  date      DateTime
+  time      String
+  guests    Int
+  occasion  String?
+  message   String?
+  status    ReservationStatus @default(EN_ATTENTE)
+  createdAt DateTime          @default(now())
+}
+
+enum ReservationStatus {
+  EN_ATTENTE
+  CONFIRMEE
+  ANNULEE
+}
+
+// ─────────────────────────────────────────
+// GALERIE
+// ─────────────────────────────────────────
+
+model GalleryImage {
+  id        Int      @id @default(autoincrement())
+  url       String
+  alt       String?
+  isMain    Boolean  @default(false)
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+// ─────────────────────────────────────────
+// PARAMÈTRES
+// ─────────────────────────────────────────
+
+model Setting {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  value     String
+  updatedAt DateTime @updatedAt
+}
