@@ -1,5 +1,22 @@
 import Image from "next/image";
 import Link from "next/link";
+import prisma from "@/lib/prisma";
+
+async function getActiveEvent() {
+  try {
+    const event = await prisma.event.findFirst({
+      where: { isActive: true },
+    });
+    if (!event) return null;
+    // Masquer si date passée
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    if (event.date < now) return null;
+    return event;
+  } catch {
+    return null;
+  }
+}
 
 const dishes = [
   { name: "Bourek aux Crevettes", desc: "Feuilles croustillantes farcies de crevettes epicees, menthe fraiche", price: "1 800 DA", badge: "CHEF" as const },
@@ -50,7 +67,9 @@ const values = [
   },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const activeEvent = await getActiveEvent();
+
   return (
     <>
       {/* Hero */}
@@ -93,19 +112,22 @@ export default function Home() {
       </section>
 
       {/* Event Banner */}
-      <section className="bg-accent py-3.5 px-6">
-        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6 text-center">
-          <span className="text-[13px] font-medium text-white">
-            🎵 Soiree Chaabi — Vendredi 28 Mars a 21h
-          </span>
-          <Link
-            href="/reservation"
-            className="text-[13px] font-medium text-white underline underline-offset-4"
-          >
-            Reserver
-          </Link>
-        </div>
-      </section>
+      {activeEvent && (
+        <section className="bg-accent py-3.5 px-6">
+          <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6 text-center">
+            <span className="text-[13px] font-medium text-white">
+              {activeEvent.title}
+              {activeEvent.time ? ` — ${activeEvent.date.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })} à ${activeEvent.time}` : ` — ${activeEvent.date.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}`}
+            </span>
+            <Link
+              href="/reservation"
+              className="text-[13px] font-medium text-white underline underline-offset-4"
+            >
+              {activeEvent.ctaLabel}
+            </Link>
+          </div>
+        </section>
+      )}
 
       {/* Menu Preview */}
       <section className="py-20 md:py-28 px-6">

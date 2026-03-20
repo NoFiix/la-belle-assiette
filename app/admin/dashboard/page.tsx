@@ -13,6 +13,27 @@ async function getReservationCount(): Promise<number> {
   }
 }
 
+async function getEventActive(): Promise<boolean> {
+  try {
+    const event = await prisma.event.findFirst({
+      where: { isActive: true },
+    })
+    return !!event
+  } catch {
+    return false
+  }
+}
+
+async function getVisibleItemsCount(): Promise<number> {
+  try {
+    return await prisma.menuItem.count({
+      where: { isVisible: true },
+    })
+  } catch {
+    return 0
+  }
+}
+
 export default async function DashboardPage() {
   const cookieStore = await cookies()
   const token = cookieStore.get(COOKIE_NAME)?.value
@@ -22,12 +43,16 @@ export default async function DashboardPage() {
   const payload = await verifyAdminToken(token)
   if (!payload) redirect('/admin/login')
 
-  const pendingCount = await getReservationCount()
+  const [pendingCount, eventActive, itemsCount] = await Promise.all([
+    getReservationCount(),
+    getEventActive(),
+    getVisibleItemsCount(),
+  ])
 
   const cards = [
     { label: 'Réservations en attente', value: String(pendingCount), color: '#C9A96E' },
-    { label: 'Événement actif', value: '—', color: '#2D4A35' },
-    { label: 'Total plats', value: '—', color: '#2D4A35' },
+    { label: 'Événement actif', value: eventActive ? 'Oui' : 'Non', color: '#2D4A35' },
+    { label: 'Total plats', value: String(itemsCount), color: '#2D4A35' },
     { label: 'Total photos', value: '—', color: '#C9A96E' },
   ]
 
