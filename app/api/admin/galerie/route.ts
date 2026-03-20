@@ -4,6 +4,40 @@ import { verifyAdminToken, COOKIE_NAME } from '@/lib/auth'
 import prisma from '@/lib/prisma'
 import { uploadImage } from '@/lib/cloudinary'
 
+export async function PATCH(request: NextRequest) {
+  try {
+    const cookieStore = await cookies()
+    const token = cookieStore.get(COOKIE_NAME)?.value
+    if (!token) return NextResponse.json({ error: 'Non authentifié' }, { status: 401 })
+
+    const payload = await verifyAdminToken(token)
+    if (!payload) return NextResponse.json({ error: 'Token invalide' }, { status: 401 })
+
+    const body = await request.json()
+
+    if (!Array.isArray(body)) {
+      return NextResponse.json({ error: 'Body doit être un tableau de { id, order }' }, { status: 400 })
+    }
+
+    for (const item of body) {
+      if (typeof item.id !== 'number' || typeof item.order !== 'number') {
+        return NextResponse.json({ error: 'Chaque item doit avoir id et order (numbers)' }, { status: 400 })
+      }
+    }
+
+    for (const { id, order } of body) {
+      await prisma.galleryImage.update({
+        where: { id },
+        data: { order },
+      })
+    }
+
+    return NextResponse.json({ success: true })
+  } catch {
+    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
+  }
+}
+
 const MAX_SIZE = 5 * 1024 * 1024 // 5 Mo
 const ALLOWED_TYPES = ['image/jpeg', 'image/png']
 

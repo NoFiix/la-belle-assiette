@@ -9,8 +9,6 @@ interface GalleryPhoto {
   alt: string | null
 }
 
-const heights = [280, 340, 300, 260, 320, 280, 300, 360, 250, 290, 310, 270]
-
 export default function GalleryClient({ photos }: { photos: GalleryPhoto[] }) {
   const [lightbox, setLightbox] = useState<number | null>(null)
 
@@ -40,12 +38,12 @@ export default function GalleryClient({ photos }: { photos: GalleryPhoto[] }) {
       </section>
 
       <section className="max-w-7xl mx-auto px-6 py-16">
-        <div className="columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {photos.map((photo, i) => (
             <div
               key={photo.id}
-              className="break-inside-avoid rounded-lg overflow-hidden cursor-pointer group relative"
-              style={{ height: heights[i % heights.length] }}
+              className="rounded-lg overflow-hidden cursor-pointer group relative"
+              style={{ height: 280 }}
               onClick={() => setLightbox(i)}
             >
               <Image

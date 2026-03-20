@@ -34,6 +34,10 @@ export default function GaleriePage() {
   const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null)
   const [settingMainId, setSettingMainId] = useState<number | null>(null)
 
+  // Drag & drop reorder
+  const [dragIdx, setDragIdx] = useState<number | null>(null)
+  const [dragOverIdx, setDragOverIdx] = useState<number | null>(null)
+
   const fetchImages = useCallback(async () => {
     try {
       const res = await fetch('/api/admin/galerie')
@@ -69,7 +73,7 @@ export default function GaleriePage() {
     setPreview(URL.createObjectURL(file))
   }
 
-  function handleDrop(e: React.DragEvent) {
+  function handleFileDrop(e: React.DragEvent) {
     e.preventDefault()
     setDragOver(false)
     const file = e.dataTransfer.files[0]
@@ -153,6 +157,55 @@ export default function GaleriePage() {
     }
   }
 
+  function handleDragStart(idx: number) {
+    setDragIdx(idx)
+  }
+
+  function handleDragOver(e: React.DragEvent, idx: number) {
+    e.preventDefault()
+    if (dragIdx === null || dragIdx === idx) return
+    setDragOverIdx(idx)
+  }
+
+  async function handleDrop(targetIdx: number) {
+    if (dragIdx === null || dragIdx === targetIdx) {
+      setDragIdx(null)
+      setDragOverIdx(null)
+      return
+    }
+
+    const reordered = [...images]
+    const [moved] = reordered.splice(dragIdx, 1)
+    reordered.splice(targetIdx, 0, moved)
+
+    // Optimistic update
+    setImages(reordered)
+    setDragIdx(null)
+    setDragOverIdx(null)
+
+    // Save to DB
+    const payload = reordered.map((img, i) => ({ id: img.id, order: i }))
+    try {
+      const res = await fetch('/api/admin/galerie', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      })
+      if (!res.ok) {
+        showFeedback('error', 'Erreur sauvegarde ordre')
+        await fetchImages()
+      }
+    } catch {
+      showFeedback('error', 'Erreur serveur')
+      await fetchImages()
+    }
+  }
+
+  function handleDragEnd() {
+    setDragIdx(null)
+    setDragOverIdx(null)
+  }
+
   return (
     <div>
       <h1
@@ -199,7 +252,7 @@ export default function GaleriePage() {
             }}
             onDragOver={(e) => { e.preventDefault(); setDragOver(true) }}
             onDragLeave={() => setDragOver(false)}
-            onDrop={handleDrop}
+            onDrop={handleFileDrop}
             onClick={() => fileInputRef.current?.click()}
           >
             <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="mx-auto mb-3" style={{ color: '#9ca3af' }}>
@@ -289,14 +342,26 @@ export default function GaleriePage() {
       )}
 
       {/* Image grid */}
+      {!loading && images.length > 1 && (
+        <p className="text-xs mb-3" style={{ color: '#9ca3af' }}>
+          Glissez les images pour réorganiser l&apos;ordre d&apos;affichage sur le site.
+        </p>
+      )}
       {!loading && images.length > 0 && (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-          {images.map((img) => (
+          {images.map((img, idx) => (
             <div
               key={img.id}
+              draggable
+              onDragStart={() => handleDragStart(idx)}
+              onDragOver={(e) => handleDragOver(e, idx)}
+              onDrop={() => handleDrop(idx)}
+              onDragEnd={handleDragEnd}
               className="relative rounded-lg overflow-hidden group"
               style={{
-                border: img.isMain ? '3px solid #C9A96E' : '1px solid #e5e7eb',
+                border: dragOverIdx === idx ? '2px dashed #C9A96E' : img.isMain ? '3px solid #C9A96E' : '1px solid #e5e7eb',
+                opacity: dragIdx === idx ? 0.4 : 1,
+                cursor: 'grab',
               }}
             >
               <div className="relative aspect-square">

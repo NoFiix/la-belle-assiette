@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import prisma from "@/lib/prisma";
 import { getSettings, s } from "@/lib/settings";
+import HomeGalleryPreview from "@/components/public/HomeGalleryPreview";
 
 async function getHeroImage(): Promise<string> {
   try {
@@ -55,15 +56,13 @@ const dishes = [
 ];
 
 const fallbackGalleryPhotos = [
-  { src: "/images/restau-06.jpeg", alt: "Salle du restaurant", h: "h-64" },
-  { src: "/images/restau-10.jpeg", alt: "Ambiance interieure", h: "h-80" },
-  { src: "/images/restau-14.jpeg", alt: "Decoration murale", h: "h-56" },
-  { src: "/images/restau-17.jpeg", alt: "Espace lounge", h: "h-72" },
-  { src: "/images/restau-20.jpeg", alt: "Detail deco", h: "h-60" },
-  { src: "/images/restau-24.jpeg", alt: "Vue de la salle", h: "h-48" },
+  { src: "/images/restau-06.jpeg", alt: "Salle du restaurant" },
+  { src: "/images/restau-10.jpeg", alt: "Ambiance interieure" },
+  { src: "/images/restau-14.jpeg", alt: "Decoration murale" },
+  { src: "/images/restau-17.jpeg", alt: "Espace lounge" },
+  { src: "/images/restau-20.jpeg", alt: "Detail deco" },
+  { src: "/images/restau-24.jpeg", alt: "Vue de la salle" },
 ];
-
-const galleryHeights = ["h-64", "h-80", "h-56", "h-72", "h-60", "h-48"];
 
 const values = [
   {
@@ -110,12 +109,16 @@ export default async function Home() {
   const notreHistoireImage = s(settings, "image_notre_histoire_home", "/images/restau-03.jpg");
 
   const galleryPhotos = galleryPreview.length > 0
-    ? galleryPreview.map((img, i) => ({
-        src: img.url,
+    ? galleryPreview.map((img) => ({
+        id: img.id,
+        url: img.url,
         alt: img.alt,
-        h: galleryHeights[i % galleryHeights.length],
       }))
-    : fallbackGalleryPhotos;
+    : fallbackGalleryPhotos.map((p, i) => ({
+        id: -(i + 1),
+        url: p.src,
+        alt: p.alt,
+      }));
 
   return (
     <>
@@ -287,33 +290,7 @@ export default async function Home() {
           <span className="eyebrow text-accent mb-3 block">EN IMAGES</span>
           <h2 className="heading-section">Notre Galerie</h2>
         </div>
-        <div className="max-w-6xl mx-auto columns-2 md:columns-3 gap-4 space-y-4">
-          {galleryPhotos.map((photo) => (
-            <div
-              key={photo.src}
-              className={`${photo.h} relative rounded-lg overflow-hidden break-inside-avoid`}
-            >
-              <Image
-                src={photo.src}
-                alt={photo.alt}
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 50vw, 33vw"
-              />
-            </div>
-          ))}
-        </div>
-        <div className="text-center mt-10">
-          <Link
-            href="/galerie"
-            className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-accent transition-colors"
-          >
-            Voir toute la galerie
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M5 12h14M12 5l7 7-7 7" />
-            </svg>
-          </Link>
-        </div>
+        <HomeGalleryPreview photos={galleryPhotos} />
       </section>
     </>
   );
