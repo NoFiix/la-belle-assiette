@@ -52,6 +52,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Aucun fichier fourni' }, { status: 400 })
     }
 
+    console.log('[Galerie Upload] Fichier reçu:', {
+      name: file.name,
+      type: file.type,
+      size: file.size,
+    })
+
     if (!ALLOWED_TYPES.includes(file.type)) {
       return NextResponse.json(
         { error: 'Format invalide. Seuls JPG et PNG sont acceptés.' },
@@ -69,7 +75,24 @@ export async function POST(request: NextRequest) {
     const arrayBuffer = await file.arrayBuffer()
     const buffer = Buffer.from(arrayBuffer)
 
-    const { url, publicId } = await uploadImage(buffer)
+    console.log('[Galerie Upload] Buffer prêt, taille:', buffer.length)
+
+    let url: string
+    let publicId: string
+
+    try {
+      const result = await uploadImage(buffer)
+      url = result.url
+      publicId = result.publicId
+      console.log('[Galerie Upload] Cloudinary OK, publicId:', publicId)
+    } catch (cloudinaryError: unknown) {
+      const err = cloudinaryError instanceof Error ? cloudinaryError : new Error(String(cloudinaryError))
+      console.error('[Galerie Upload] Erreur Cloudinary:', err.message, err.stack)
+      return NextResponse.json(
+        { error: `Erreur Cloudinary: ${err.message}` },
+        { status: 500 }
+      )
+    }
 
     const alt = formData.get('alt') as string | null
 
@@ -84,7 +107,12 @@ export async function POST(request: NextRequest) {
     })
 
     return NextResponse.json(image, { status: 201 })
-  } catch {
-    return NextResponse.json({ error: 'Erreur lors de l\'upload' }, { status: 500 })
+  } catch (error: unknown) {
+    const err = error instanceof Error ? error : new Error(String(error))
+    console.error('[Galerie Upload] Erreur générale:', err.message, err.stack)
+    return NextResponse.json(
+      { error: `Erreur upload: ${err.message}` },
+      { status: 500 }
+    )
   }
 }

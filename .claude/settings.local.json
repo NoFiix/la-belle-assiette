@@ -20,7 +20,11 @@
       "Bash(git branch:*)",
       "Bash(cd:*)",
       "Bash(npx next:*)",
-      "Bash(npx ts-node:*)"
+      "Bash(npx ts-node:*)",
+      "Bash(npm ls:*)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000)",
+      "Bash(node -e \":*)",
+      "Bash(curl -s -b \"C:/Users/Daniel/AppData/Local/Temp/lba-cookies.txt\" -X DELETE http://localhost:3000/api/admin/galerie/1)"
     ],
     "deny": [
       "Bash(git add:*)",

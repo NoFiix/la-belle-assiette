@@ -61,11 +61,9 @@ export default function ParametresPage() {
   const [loading, setLoading] = useState(true)
 
   // Section feedbacks
-  const [textsFb, setTextsFb] = useState<{ type: 'success' | 'error'; msg: string } | null>(null)
   const [contactFb, setContactFb] = useState<{ type: 'success' | 'error'; msg: string } | null>(null)
   const [scheduleFb, setScheduleFb] = useState<{ type: 'success' | 'error'; msg: string } | null>(null)
 
-  const [savingTexts, setSavingTexts] = useState(false)
   const [savingContact, setSavingContact] = useState(false)
   const [savingSchedule, setSavingSchedule] = useState(false)
 
@@ -99,7 +97,7 @@ export default function ParametresPage() {
     setSettings((prev) => ({ ...prev, [key]: value }))
   }
 
-  function showFb(setter: typeof setTextsFb, type: 'success' | 'error', msg: string) {
+  function showFb(setter: typeof setContactFb, type: 'success' | 'error', msg: string) {
     setter({ type, msg })
     setTimeout(() => setter(null), 3000)
   }
@@ -107,7 +105,7 @@ export default function ParametresPage() {
   async function saveKeys(
     keys: { key: string; value: string }[],
     setSaving: (v: boolean) => void,
-    setFb: typeof setTextsFb
+    setFb: typeof setContactFb
   ) {
     setSaving(true)
     try {
@@ -215,47 +213,6 @@ export default function ParametresPage() {
       >
         Paramètres
       </h1>
-
-      {/* Section: Textes du site */}
-      <div className="bg-white rounded-lg shadow-sm border p-6" style={{ borderColor: '#e5e7eb' }}>
-        <SectionTitle>Textes du site</SectionTitle>
-        <div className="space-y-4">
-          <div>
-            <div className="flex justify-between items-baseline mb-1">
-              <label className="text-sm font-medium" style={{ color: '#2D4A35' }}>Intro homepage</label>
-              <span className="text-xs" style={{ color: get('homepage_intro').length > 200 ? '#991b1b' : '#9ca3af' }}>{get('homepage_intro').length}/200</span>
-            </div>
-            <textarea value={get('homepage_intro')} onChange={(e) => set('homepage_intro', e.target.value)} maxLength={200} rows={2} className="w-full px-3 py-2 border rounded-md text-sm resize-none focus:outline-none focus:ring-2" style={{ borderColor: '#d1d5db' }} />
-          </div>
-          <div>
-            <div className="flex justify-between items-baseline mb-1">
-              <label className="text-sm font-medium" style={{ color: '#2D4A35' }}>Description restaurant</label>
-              <span className="text-xs" style={{ color: get('restaurant_desc').length > 500 ? '#991b1b' : '#9ca3af' }}>{get('restaurant_desc').length}/500</span>
-            </div>
-            <textarea value={get('restaurant_desc')} onChange={(e) => set('restaurant_desc', e.target.value)} maxLength={500} rows={3} className="w-full px-3 py-2 border rounded-md text-sm resize-none focus:outline-none focus:ring-2" style={{ borderColor: '#d1d5db' }} />
-          </div>
-          <div>
-            <div className="flex justify-between items-baseline mb-1">
-              <label className="text-sm font-medium" style={{ color: '#2D4A35' }}>Texte Notre Lieu</label>
-              <span className="text-xs" style={{ color: get('restaurant_lieu_text').length > 500 ? '#991b1b' : '#9ca3af' }}>{get('restaurant_lieu_text').length}/500</span>
-            </div>
-            <textarea value={get('restaurant_lieu_text')} onChange={(e) => set('restaurant_lieu_text', e.target.value)} maxLength={500} rows={3} className="w-full px-3 py-2 border rounded-md text-sm resize-none focus:outline-none focus:ring-2" style={{ borderColor: '#d1d5db' }} />
-          </div>
-        </div>
-        <button
-          onClick={() => saveKeys([
-            { key: 'homepage_intro', value: get('homepage_intro') },
-            { key: 'restaurant_desc', value: get('restaurant_desc') },
-            { key: 'restaurant_lieu_text', value: get('restaurant_lieu_text') },
-          ], setSavingTexts, setTextsFb)}
-          disabled={savingTexts}
-          className="mt-4 px-5 py-2 rounded-md text-sm font-medium text-white disabled:opacity-50"
-          style={{ backgroundColor: '#2D4A35' }}
-        >
-          {savingTexts ? 'Enregistrement...' : 'Enregistrer'}
-        </button>
-        <Feedback feedback={textsFb} />
-      </div>
 
       {/* Section: Contact & Réseaux */}
       <div className="bg-white rounded-lg shadow-sm border p-6" style={{ borderColor: '#e5e7eb' }}>
