@@ -22,7 +22,7 @@ type FormData = {
   email: string;
   date: string;
   time: string;
-  guests: string;
+  guests: number;
   occasion: string;
   message: string;
 };
@@ -34,7 +34,7 @@ export default function ReservationPage() {
     email: "",
     date: "",
     time: "",
-    guests: "",
+    guests: 2,
     occasion: "",
     message: "",
   });
@@ -58,10 +58,7 @@ export default function ReservationPage() {
       const res = await fetch("/api/reservations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...form,
-          guests: parseInt(form.guests, 10),
-        }),
+        body: JSON.stringify(form),
       });
 
       if (!res.ok) {
@@ -76,7 +73,7 @@ export default function ReservationPage() {
         email: "",
         date: "",
         time: "",
-        guests: "",
+        guests: 2,
         occasion: "",
         message: "",
       });
@@ -88,217 +85,257 @@ export default function ReservationPage() {
 
   return (
     <>
-      <section className="bg-primary pt-32 pb-16 px-6 text-center">
-        <h1 className="heading-hero text-white text-4xl md:text-6xl">Reservation</h1>
-        <p className="text-white/70 mt-4 text-lg max-w-xl mx-auto">
-          Reservez votre table en quelques clics
-        </p>
+      {/* Hero */}
+      <section className="bg-[#2D4A35] pt-32 pb-16 px-6 text-center">
+        <h1 className="font-serif text-4xl md:text-6xl text-white">Reservation</h1>
       </section>
 
-      <section className="max-w-2xl mx-auto px-6 py-16">
-        {status === "success" ? (
-          <div className="text-center py-12 animate-fade-in">
-            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
-              <svg className="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-              </svg>
+      {/* Content */}
+      <section className="max-w-6xl mx-auto px-6 py-16 grid grid-cols-1 lg:grid-cols-3 gap-12">
+        {/* Form — 2/3 */}
+        <div className="lg:col-span-2">
+          {status === "success" ? (
+            <div className="text-center py-12">
+              <div className="w-16 h-16 bg-[#2D4A35]/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg className="w-8 h-8 text-[#2D4A35]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h2 className="font-serif text-2xl md:text-3xl text-[#2D4A35] mb-4">Reservation envoyee !</h2>
+              <p className="text-[#2D4A35]/60 mb-8 max-w-md mx-auto">
+                Merci pour votre reservation. Nous vous contacterons rapidement pour confirmer votre table.
+              </p>
+              <button
+                onClick={() => setStatus("idle")}
+                className="inline-block px-8 py-3 bg-[#C9A96E] text-white font-medium rounded-full hover:bg-[#b8954f] transition-colors"
+              >
+                Faire une nouvelle reservation
+              </button>
             </div>
-            <h2 className="heading-section mb-4">Reservation envoyee !</h2>
-            <p className="body-text text-text-muted mb-8">
-              Merci pour votre reservation. Nous vous contacterons rapidement pour confirmer votre table.
-            </p>
-            <button
-              onClick={() => setStatus("idle")}
-              className="btn-gold"
-            >
-              Faire une nouvelle reservation
-            </button>
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Nom */}
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium text-text mb-2">
-                Nom complet <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                required
-                value={form.name}
-                onChange={handleChange}
-                className="w-full px-4 py-3 rounded-lg border border-black/10 bg-white text-text focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent transition-colors"
-                placeholder="Votre nom"
-              />
-            </div>
-
-            {/* Telephone */}
-            <div>
-              <label htmlFor="phone" className="block text-sm font-medium text-text mb-2">
-                Telephone <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="tel"
-                id="phone"
-                name="phone"
-                required
-                value={form.phone}
-                onChange={handleChange}
-                className="w-full px-4 py-3 rounded-lg border border-black/10 bg-white text-text focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent transition-colors"
-                placeholder="0XX XX XX XX XX"
-              />
-            </div>
-
-            {/* Email */}
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-text mb-2">
-                Email <span className="text-text-muted text-xs">(optionnel)</span>
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={form.email}
-                onChange={handleChange}
-                className="w-full px-4 py-3 rounded-lg border border-black/10 bg-white text-text focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent transition-colors"
-                placeholder="votre@email.com"
-              />
-            </div>
-
-            {/* Date + Heure */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Nom */}
               <div>
-                <label htmlFor="date" className="block text-sm font-medium text-text mb-2">
-                  Date <span className="text-red-500">*</span>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-[#2D4A35]/50 mb-2">
+                  Nom complet *
                 </label>
                 <input
-                  type="date"
-                  id="date"
-                  name="date"
+                  type="text"
+                  name="name"
                   required
-                  min={today}
-                  value={form.date}
+                  value={form.name}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-lg border border-black/10 bg-white text-text focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent transition-colors"
+                  className="w-full border border-[#2D4A35]/10 rounded-lg px-4 py-3 bg-transparent text-sm focus:ring-1 focus:ring-[#C9A96E] focus:border-[#C9A96E] outline-none transition-all"
+                  placeholder="Votre nom"
                 />
               </div>
-              <div>
-                <label htmlFor="time" className="block text-sm font-medium text-text mb-2">
-                  Heure <span className="text-red-500">*</span>
-                </label>
-                <select
-                  id="time"
-                  name="time"
-                  required
-                  value={form.time}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-lg border border-black/10 bg-white text-text focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent transition-colors"
-                >
-                  <option value="">Choisir une heure</option>
-                  {heures.map((h) => (
-                    <option key={h} value={h}>{h}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
 
-            {/* Couverts + Occasion */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="guests" className="block text-sm font-medium text-text mb-2">
-                  Nombre de couverts <span className="text-red-500">*</span>
-                </label>
-                <select
-                  id="guests"
-                  name="guests"
-                  required
-                  value={form.guests}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-lg border border-black/10 bg-white text-text focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent transition-colors"
-                >
-                  <option value="">Combien ?</option>
-                  {Array.from({ length: 20 }, (_, i) => (
-                    <option key={i + 1} value={i + 1}>
-                      {i + 1} {i === 0 ? "personne" : "personnes"}
-                    </option>
-                  ))}
-                </select>
+              {/* Telephone + Email */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-[#2D4A35]/50 mb-2">
+                    Telephone *
+                  </label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    required
+                    value={form.phone}
+                    onChange={handleChange}
+                    className="w-full border border-[#2D4A35]/10 rounded-lg px-4 py-3 bg-transparent text-sm focus:ring-1 focus:ring-[#C9A96E] focus:border-[#C9A96E] outline-none transition-all"
+                    placeholder="+213 0XX XX XX XX"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-[#2D4A35]/50 mb-2">
+                    Email <span className="normal-case tracking-normal text-[#2D4A35]/30">(optionnel)</span>
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={form.email}
+                    onChange={handleChange}
+                    className="w-full border border-[#2D4A35]/10 rounded-lg px-4 py-3 bg-transparent text-sm focus:ring-1 focus:ring-[#C9A96E] focus:border-[#C9A96E] outline-none transition-all"
+                    placeholder="email@exemple.com"
+                  />
+                </div>
               </div>
+
+              {/* Date + Heure */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-[#2D4A35]/50 mb-2">
+                    Date *
+                  </label>
+                  <input
+                    type="date"
+                    name="date"
+                    required
+                    min={today}
+                    value={form.date}
+                    onChange={handleChange}
+                    className="w-full border border-[#2D4A35]/10 rounded-lg px-4 py-3 bg-transparent text-sm focus:ring-1 focus:ring-[#C9A96E] focus:border-[#C9A96E] outline-none transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-[#2D4A35]/50 mb-2">
+                    Heure *
+                  </label>
+                  <select
+                    name="time"
+                    required
+                    value={form.time}
+                    onChange={handleChange}
+                    className="w-full border border-[#2D4A35]/10 rounded-lg px-4 py-3 bg-transparent text-sm focus:ring-1 focus:ring-[#C9A96E] focus:border-[#C9A96E] outline-none transition-all"
+                  >
+                    <option value="">Choisir une heure</option>
+                    {heures.map((h) => (
+                      <option key={h} value={h}>{h}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* Couverts */}
               <div>
-                <label htmlFor="occasion" className="block text-sm font-medium text-text mb-2">
-                  Occasion <span className="text-text-muted text-xs">(optionnel)</span>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-[#2D4A35]/50 mb-2">
+                  Nombre de couverts *
+                </label>
+                <div className="flex items-center gap-4">
+                  <button
+                    type="button"
+                    onClick={() => setForm((prev) => ({ ...prev, guests: Math.max(1, prev.guests - 1) }))}
+                    className="w-10 h-10 rounded-full border border-[#2D4A35]/10 flex items-center justify-center hover:bg-[#F9F6F0] transition-colors"
+                  >
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M20 12H4" />
+                    </svg>
+                  </button>
+                  <span className="text-lg font-medium w-8 text-center tabular-nums">{form.guests}</span>
+                  <button
+                    type="button"
+                    onClick={() => setForm((prev) => ({ ...prev, guests: Math.min(20, prev.guests + 1) }))}
+                    className="w-10 h-10 rounded-full border border-[#2D4A35]/10 flex items-center justify-center hover:bg-[#F9F6F0] transition-colors"
+                  >
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              {/* Occasion */}
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-[#2D4A35]/50 mb-2">
+                  Occasion speciale
                 </label>
                 <select
-                  id="occasion"
                   name="occasion"
                   value={form.occasion}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-lg border border-black/10 bg-white text-text focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent transition-colors"
+                  className="w-full border border-[#2D4A35]/10 rounded-lg px-4 py-3 bg-transparent text-sm focus:ring-1 focus:ring-[#C9A96E] focus:border-[#C9A96E] outline-none transition-all"
                 >
-                  <option value="">Aucune</option>
+                  <option value="">— Selectionner —</option>
                   {occasions.map((o) => (
                     <option key={o} value={o}>{o}</option>
                   ))}
                 </select>
               </div>
+
+              {/* Message */}
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-[#2D4A35]/50 mb-2">
+                  Message <span className="normal-case tracking-normal text-[#2D4A35]/30">(optionnel)</span>
+                </label>
+                <textarea
+                  name="message"
+                  rows={4}
+                  value={form.message}
+                  onChange={handleChange}
+                  className="w-full border border-[#2D4A35]/10 rounded-lg px-4 py-3 bg-transparent text-sm focus:ring-1 focus:ring-[#C9A96E] focus:border-[#C9A96E] outline-none transition-all resize-none"
+                  placeholder="Allergies, demandes speciales..."
+                />
+              </div>
+
+              {/* Error */}
+              {status === "error" && (
+                <div className="bg-red-50 text-red-700 px-4 py-3 rounded-lg text-sm">
+                  {errorMsg}
+                </div>
+              )}
+
+              {/* Submit */}
+              <button
+                type="submit"
+                disabled={status === "loading"}
+                className="w-full py-4 bg-[#C9A96E] text-white font-medium rounded-full text-[15px] hover:bg-[#b8954f] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                {status === "loading" ? "Envoi en cours..." : "Confirmer ma reservation"}
+              </button>
+
+              {/* WhatsApp alternative */}
+              <p className="text-center text-sm text-[#2D4A35]/50">
+                Ou{" "}
+                <a
+                  href="https://wa.me/2130542472248"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[#2D4A35] underline underline-offset-4 hover:text-[#C9A96E] transition-colors"
+                >
+                  reserver via WhatsApp &rarr;
+                </a>
+              </p>
+            </form>
+          )}
+        </div>
+
+        {/* Info card — 1/3 */}
+        <div className="bg-[#2D4A35] text-white rounded-xl overflow-hidden h-fit sticky top-28">
+          {/* Google Maps embed */}
+          <a
+            href="https://www.google.com/maps/dir/?api=1&destination=Port+La+P%C3%AAcherie+62+Quai+Sud+Alger"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block"
+          >
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3197.1!2d3.0575!3d36.786!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x128fb2b0!2sPort+La+P%C3%AAcherie%2C+62+Quai+Sud+Alger%2C+Casbah+16000!5e0!3m2!1sfr!2sdz!4v1"
+              width="100%"
+              height="180"
+              style={{ border: 0 }}
+              allowFullScreen={false}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              className="pointer-events-none"
+              title="La Belle Assiette — Port La Pecherie, Alger"
+            />
+          </a>
+
+          <div className="p-8">
+            <h3 className="font-serif text-xl mb-4">Informations</h3>
+
+            <div className="space-y-3 text-sm text-white/70">
+              <p>Port La Pecherie, 62 Quai Sud Alger, Alger</p>
+              <a href="tel:+2130542472248" className="block hover:text-white transition-colors">
+                +213 0542 47 22 48
+              </a>
+              <a href="tel:+2130560531677" className="block hover:text-white transition-colors">
+                +213 0560 53 16 77
+              </a>
             </div>
 
-            {/* Message */}
-            <div>
-              <label htmlFor="message" className="block text-sm font-medium text-text mb-2">
-                Message <span className="text-text-muted text-xs">(optionnel)</span>
-              </label>
-              <textarea
-                id="message"
-                name="message"
-                rows={3}
-                value={form.message}
-                onChange={handleChange}
-                className="w-full px-4 py-3 rounded-lg border border-black/10 bg-white text-text focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent transition-colors resize-none"
-                placeholder="Allergies, demandes particulieres..."
-              />
+            {/* Horaires jour par jour */}
+            <div className="mt-6 pt-6 border-t border-white/10 space-y-2 text-sm text-white/70">
+              <div className="flex justify-between"><span>Lundi</span><span>11h — 23h</span></div>
+              <div className="flex justify-between"><span>Mardi</span><span>11h — 23h</span></div>
+              <div className="flex justify-between"><span>Mercredi</span><span>11h — 23h</span></div>
+              <div className="flex justify-between"><span>Jeudi</span><span>11h — 23h</span></div>
+              <div className="flex justify-between"><span>Vendredi</span><span>17h — 23h</span></div>
+              <div className="flex justify-between"><span>Samedi</span><span>11h — 23h</span></div>
+              <div className="flex justify-between"><span>Dimanche</span><span className="text-white/40">Ferme</span></div>
             </div>
-
-            {/* Error */}
-            {status === "error" && (
-              <div className="bg-red-50 text-red-700 px-4 py-3 rounded-lg text-sm">
-                {errorMsg}
-              </div>
-            )}
-
-            {/* Submit */}
-            <button
-              type="submit"
-              disabled={status === "loading"}
-              className="btn-gold w-full text-center disabled:opacity-60 disabled:cursor-not-allowed"
-            >
-              {status === "loading" ? "Envoi en cours..." : "Confirmer ma reservation"}
-            </button>
-
-            {/* WhatsApp alternative */}
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-black/10" />
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="bg-background px-4 text-text-muted">ou</span>
-              </div>
-            </div>
-
-            <a
-              href="https://wa.me/213054247224"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center gap-3 w-full py-3 px-6 rounded-full border-2 border-[#25D366] text-[#25D366] font-medium hover:bg-[#25D366] hover:text-white transition-colors"
-            >
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-              </svg>
-              Ou reserver via WhatsApp
-            </a>
-          </form>
-        )}
+          </div>
+        </div>
       </section>
     </>
   );

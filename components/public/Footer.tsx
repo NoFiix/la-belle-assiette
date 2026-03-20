@@ -41,18 +41,13 @@ export default function Footer() {
         <div>
           <h4 className="eyebrow text-white/50 mb-4">Horaires</h4>
           <div className="space-y-2 text-sm text-white/70">
-            <div className="grid grid-cols-2 gap-2">
-              <span>Lun — Sam</span>
-              <span className="text-right">11h — 23h</span>
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              <span>Vendredi</span>
-              <span className="text-right">17h — 23h</span>
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              <span>Dimanche</span>
-              <span className="text-right text-white/40">Ferme</span>
-            </div>
+            <div className="flex justify-between"><span>Lundi</span><span>11h — 23h</span></div>
+            <div className="flex justify-between"><span>Mardi</span><span>11h — 23h</span></div>
+            <div className="flex justify-between"><span>Mercredi</span><span>11h — 23h</span></div>
+            <div className="flex justify-between"><span>Jeudi</span><span>11h — 23h</span></div>
+            <div className="flex justify-between"><span>Vendredi</span><span>17h — 23h</span></div>
+            <div className="flex justify-between"><span>Samedi</span><span>11h — 23h</span></div>
+            <div className="flex justify-between"><span>Dimanche</span><span className="text-white/40">Ferme</span></div>
           </div>
         </div>
 
