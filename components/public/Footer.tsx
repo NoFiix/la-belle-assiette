@@ -1,6 +1,20 @@
 import Link from "next/link";
 
-export default function Footer() {
+interface FooterProps {
+  schedule: { day: string; hours: string }[];
+  whatsapp: string;
+  instagram: string;
+  facebook: string;
+  tiktok: string;
+}
+
+export default function Footer({ schedule, whatsapp, instagram, facebook, tiktok }: FooterProps) {
+  const socials = [
+    { name: "Instagram", url: instagram },
+    { name: "Facebook", url: facebook },
+    { name: "TikTok", url: tiktok },
+  ];
+
   return (
     <footer className="bg-primary text-white/90 py-16 md:py-20 px-6 md:px-8">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
@@ -12,13 +26,25 @@ export default function Footer() {
             raffinee dans un cadre exceptionnel.
           </p>
           <div className="flex gap-4">
-            {["Instagram", "Facebook", "TikTok"].map((s) => (
-              <span
-                key={s}
-                className="text-xs text-white/40 uppercase tracking-wider hover:text-white/70 transition-colors cursor-pointer"
-              >
-                {s}
-              </span>
+            {socials.map((s) => (
+              s.url ? (
+                <a
+                  key={s.name}
+                  href={s.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-white/40 uppercase tracking-wider hover:text-white/70 transition-colors"
+                >
+                  {s.name}
+                </a>
+              ) : (
+                <span
+                  key={s.name}
+                  className="text-xs text-white/40 uppercase tracking-wider"
+                >
+                  {s.name}
+                </span>
+              )
             ))}
           </div>
         </div>
@@ -28,8 +54,8 @@ export default function Footer() {
           <h4 className="eyebrow text-white/50 mb-4">Contact</h4>
           <div className="space-y-3 text-sm text-white/70">
             <p>Port La Pecherie, Alger</p>
-            <a href="tel:+213054247224" className="block hover:text-white transition-colors">
-              +213 054 247 224
+            <a href={`tel:${whatsapp}`} className="block hover:text-white transition-colors">
+              {whatsapp}
             </a>
             <a href="mailto:contact@labelleassiette.com" className="block hover:text-white transition-colors">
               contact@labelleassiette.com
@@ -41,13 +67,14 @@ export default function Footer() {
         <div>
           <h4 className="eyebrow text-white/50 mb-4">Horaires</h4>
           <div className="space-y-2 text-sm text-white/70">
-            <div className="flex justify-between"><span>Lundi</span><span>11h — 23h</span></div>
-            <div className="flex justify-between"><span>Mardi</span><span>11h — 23h</span></div>
-            <div className="flex justify-between"><span>Mercredi</span><span>11h — 23h</span></div>
-            <div className="flex justify-between"><span>Jeudi</span><span>11h — 23h</span></div>
-            <div className="flex justify-between"><span>Vendredi</span><span>17h — 23h</span></div>
-            <div className="flex justify-between"><span>Samedi</span><span>11h — 23h</span></div>
-            <div className="flex justify-between"><span>Dimanche</span><span className="text-white/40">Ferme</span></div>
+            {schedule.map((s) => (
+              <div key={s.day} className="flex justify-between">
+                <span>{s.day}</span>
+                <span className={!s.hours || s.hours.toLowerCase() === 'fermé' ? 'text-white/40' : ''}>
+                  {s.hours || '—'}
+                </span>
+              </div>
+            ))}
           </div>
         </div>
 

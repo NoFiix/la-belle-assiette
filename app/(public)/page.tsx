@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import prisma from "@/lib/prisma";
+import { getSettings, s } from "@/lib/settings";
 
 async function getHeroImage(): Promise<string> {
   try {
@@ -98,11 +99,15 @@ const values = [
 ];
 
 export default async function Home() {
-  const [activeEvent, heroImage, galleryPreview] = await Promise.all([
+  const [activeEvent, heroImage, galleryPreview, settings] = await Promise.all([
     getActiveEvent(),
     getHeroImage(),
     getGalleryPreview(),
+    getSettings(),
   ]);
+
+  const homepageIntro = s(settings, "homepage_intro", "Gastronomie algerienne au coeur d'Alger");
+  const notreHistoireImage = s(settings, "image_notre_histoire_home", "/images/restau-03.jpg");
 
   const galleryPhotos = galleryPreview.length > 0
     ? galleryPreview.map((img, i) => ({
@@ -134,7 +139,7 @@ export default async function Home() {
             La Belle Assiette
           </h1>
           <p className="stagger-3 text-white/70 text-lg md:text-xl max-w-md mx-auto mb-10 font-sans">
-            Gastronomie algerienne au coeur d&apos;Alger
+            {homepageIntro}
           </p>
           <div className="stagger-4 flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/reservation" className="btn-gold">
@@ -219,7 +224,7 @@ export default async function Home() {
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="relative aspect-[3/4] rounded-xl overflow-hidden">
             <Image
-              src="/images/restau-03.jpg"
+              src={notreHistoireImage}
               alt="Interieur du restaurant"
               fill
               className="object-cover"

@@ -1,4 +1,20 @@
-export default function ContactPage() {
+import { getSettings, getSchedule, s } from "@/lib/settings";
+
+export default async function ContactPage() {
+  const settings = await getSettings();
+  const schedule = getSchedule(settings);
+  const whatsapp = s(settings, "whatsapp_number", "+213054247224");
+  const whatsappClean = whatsapp.replace(/[^0-9]/g, "");
+  const instagram = s(settings, "instagram_url");
+  const facebook = s(settings, "facebook_url");
+  const tiktok = s(settings, "tiktok_url");
+
+  const socials = [
+    { name: "Instagram", url: instagram },
+    { name: "Facebook", url: facebook },
+    { name: "TikTok", url: tiktok },
+  ];
+
   return (
     <>
       <section className="bg-primary pt-32 pb-16 px-6 text-center">
@@ -33,8 +49,8 @@ export default function ContactPage() {
               </svg>
               <div>
                 <p className="font-medium mb-1">Telephone</p>
-                <a href="tel:+213054247224" className="text-sm text-text-muted hover:text-text transition-colors block">
-                  +213 054 247 224
+                <a href={`tel:${whatsapp}`} className="text-sm text-text-muted hover:text-text transition-colors block">
+                  {whatsapp}
                 </a>
               </div>
             </div>
@@ -63,18 +79,14 @@ export default function ContactPage() {
                 <p className="font-medium mb-3">Horaires</p>
                 <table className="text-sm text-text-muted">
                   <tbody>
-                    <tr>
-                      <td className="pr-8 py-1">Lundi — Samedi</td>
-                      <td>11h — 23h</td>
-                    </tr>
-                    <tr>
-                      <td className="pr-8 py-1">Vendredi</td>
-                      <td>17h — 23h</td>
-                    </tr>
-                    <tr>
-                      <td className="pr-8 py-1">Dimanche</td>
-                      <td className="text-text-muted/50">Ferme</td>
-                    </tr>
+                    {schedule.map((s) => (
+                      <tr key={s.day}>
+                        <td className="pr-8 py-1">{s.day}</td>
+                        <td className={!s.hours || s.hours.toLowerCase() === "fermé" ? "text-text-muted/50" : ""}>
+                          {s.hours || "—"}
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
@@ -83,7 +95,7 @@ export default function ContactPage() {
 
           <div className="mt-10">
             <a
-              href="https://wa.me/213054247224"
+              href={`https://wa.me/${whatsappClean}`}
               target="_blank"
               rel="noopener noreferrer"
               className="btn-gold text-center"
@@ -93,14 +105,26 @@ export default function ContactPage() {
           </div>
 
           <div className="flex gap-4 mt-8">
-            {["Instagram", "Facebook", "TikTok"].map((s) => (
-              <span
-                key={s}
-                className="text-xs uppercase tracking-wider text-text-muted hover:text-text transition-colors cursor-pointer"
-              >
-                {s}
-              </span>
-            ))}
+            {socials.map((social) =>
+              social.url ? (
+                <a
+                  key={social.name}
+                  href={social.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs uppercase tracking-wider text-text-muted hover:text-text transition-colors"
+                >
+                  {social.name}
+                </a>
+              ) : (
+                <span
+                  key={social.name}
+                  className="text-xs uppercase tracking-wider text-text-muted"
+                >
+                  {social.name}
+                </span>
+              )
+            )}
           </div>
         </div>
 

@@ -1,7 +1,12 @@
-export default function WhatsAppButton() {
+function formatWhatsAppUrl(number: string): string {
+  const cleaned = number.replace(/[^0-9]/g, '')
+  return `https://wa.me/${cleaned}`
+}
+
+export default function WhatsAppButton({ number = '+213054247224' }: { number?: string }) {
   return (
     <a
-      href="https://wa.me/213054247224"
+      href={formatWhatsAppUrl(number)}
       target="_blank"
       rel="noopener noreferrer"
       className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-[#25D366] flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 transition-transform"

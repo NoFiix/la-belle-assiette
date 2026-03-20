@@ -19,7 +19,8 @@
       "Bash(git log:*)",
       "Bash(git branch:*)",
       "Bash(cd:*)",
-      "Bash(npx next:*)"
+      "Bash(npx next:*)",
+      "Bash(npx ts-node:*)"
     ],
     "deny": [
       "Bash(git add:*)",
