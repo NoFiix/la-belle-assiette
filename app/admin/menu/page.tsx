@@ -72,6 +72,7 @@ export default function MenuAdminPage() {
 
   // Toggle state
   const [togglingId, setTogglingId] = useState<number | null>(null)
+  const [togglingCatId, setTogglingCatId] = useState<number | null>(null)
 
   const fetchCategories = useCallback(async () => {
     try {
@@ -229,6 +230,27 @@ export default function MenuAdminPage() {
     }
   }
 
+  async function handleToggleCategoryVisible(cat: MenuCategory) {
+    setTogglingCatId(cat.id)
+    try {
+      const res = await fetch(`/api/admin/menu/categories/${cat.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isVisible: !cat.isVisible }),
+      })
+      if (!res.ok) {
+        setFeedback({ type: 'error', message: 'Erreur mise à jour catégorie' })
+        setTimeout(() => setFeedback(null), 3000)
+        return
+      }
+      await fetchCategories()
+    } catch {
+      // silent
+    } finally {
+      setTogglingCatId(null)
+    }
+  }
+
   function displayDesc(item: MenuItem, catName: string): string {
     if (SUBSECTION_OPTIONS[catName]) {
       return parseTag(item.description).text
@@ -295,7 +317,7 @@ export default function MenuAdminPage() {
       {!loading && categories.length > 0 && (
         <>
           {/* Category tabs */}
-          <div className="flex gap-2 mb-6 overflow-x-auto pb-1">
+          <div className="flex gap-2 mb-4 overflow-x-auto pb-1">
             {categories.map((cat, i) => (
               <button
                 key={cat.id}
@@ -303,11 +325,17 @@ export default function MenuAdminPage() {
                 className="px-4 py-2 rounded-md text-sm font-medium whitespace-nowrap transition-colors"
                 style={{
                   backgroundColor: activeTab === i ? '#2D4A35' : 'white',
-                  color: activeTab === i ? 'white' : '#374151',
+                  color: activeTab === i ? 'white' : cat.isVisible ? '#374151' : '#9ca3af',
                   border: activeTab === i ? '1px solid #2D4A35' : '1px solid #e5e7eb',
+                  opacity: cat.isVisible ? 1 : 0.6,
                 }}
               >
                 {cat.name}
+                {!cat.isVisible && (
+                  <span className="ml-1.5 px-1.5 py-0.5 rounded text-xs" style={{ backgroundColor: '#fee2e2', color: '#991b1b' }}>
+                    Masqué
+                  </span>
+                )}
                 <span
                   className="ml-1.5 px-1.5 py-0.5 rounded text-xs"
                   style={{
@@ -320,6 +348,31 @@ export default function MenuAdminPage() {
               </button>
             ))}
           </div>
+
+          {/* Category visibility toggle */}
+          {activeCat && (
+            <div className="flex items-center gap-3 mb-6 bg-white rounded-lg shadow-sm border px-4 py-3" style={{ borderColor: '#e5e7eb' }}>
+              <span className="text-sm" style={{ color: '#374151' }}>
+                Visible sur le site
+              </span>
+              <button
+                onClick={() => handleToggleCategoryVisible(activeCat)}
+                disabled={togglingCatId === activeCat.id}
+                className="relative inline-flex h-6 w-10 shrink-0 rounded-full transition-colors duration-200 disabled:opacity-50"
+                style={{ backgroundColor: activeCat.isVisible ? '#2D4A35' : '#d1d5db' }}
+              >
+                <span
+                  className="inline-block h-4 w-4 rounded-full bg-white shadow-sm transition-transform duration-200"
+                  style={{ transform: activeCat.isVisible ? 'translate(18px, 4px)' : 'translate(4px, 4px)' }}
+                />
+              </button>
+              {!activeCat.isVisible && (
+                <span className="text-xs" style={{ color: '#9ca3af' }}>
+                  Cette catégorie est masquée sur /menu
+                </span>
+              )}
+            </div>
+          )}
 
           {/* Items list */}
           {activeCat && activeCat.items.length === 0 && (
