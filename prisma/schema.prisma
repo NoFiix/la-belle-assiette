@@ -103,6 +103,7 @@ enum ReservationStatus {
 model GalleryImage {
   id        Int      @id @default(autoincrement())
   url       String
+  publicId  String?
   alt       String?
   isMain    Boolean  @default(false)
   order     Int      @default(0)

@@ -2,6 +2,34 @@ import Image from "next/image";
 import Link from "next/link";
 import prisma from "@/lib/prisma";
 
+async function getHeroImage(): Promise<string> {
+  try {
+    const main = await prisma.galleryImage.findFirst({
+      where: { isMain: true },
+    });
+    if (main) return main.url;
+  } catch {
+    // fallback
+  }
+  return "/images/restau-01.jpg";
+}
+
+async function getGalleryPreview() {
+  try {
+    const images = await prisma.galleryImage.findMany({
+      take: 6,
+      orderBy: [{ order: "asc" }, { createdAt: "desc" }],
+    });
+    return images.map((img) => ({
+      id: img.id,
+      url: img.url,
+      alt: img.alt || "Photo du restaurant",
+    }));
+  } catch {
+    return [];
+  }
+}
+
 async function getActiveEvent() {
   try {
     const event = await prisma.event.findFirst({
@@ -25,7 +53,7 @@ const dishes = [
   { name: "Baklawa aux Pistaches", desc: "Fines feuilles dorees au miel de montagne", price: "900 DA", badge: null },
 ];
 
-const galleryPhotos = [
+const fallbackGalleryPhotos = [
   { src: "/images/restau-06.jpeg", alt: "Salle du restaurant", h: "h-64" },
   { src: "/images/restau-10.jpeg", alt: "Ambiance interieure", h: "h-80" },
   { src: "/images/restau-14.jpeg", alt: "Decoration murale", h: "h-56" },
@@ -33,6 +61,8 @@ const galleryPhotos = [
   { src: "/images/restau-20.jpeg", alt: "Detail deco", h: "h-60" },
   { src: "/images/restau-24.jpeg", alt: "Vue de la salle", h: "h-48" },
 ];
+
+const galleryHeights = ["h-64", "h-80", "h-56", "h-72", "h-60", "h-48"];
 
 const values = [
   {
@@ -68,14 +98,26 @@ const values = [
 ];
 
 export default async function Home() {
-  const activeEvent = await getActiveEvent();
+  const [activeEvent, heroImage, galleryPreview] = await Promise.all([
+    getActiveEvent(),
+    getHeroImage(),
+    getGalleryPreview(),
+  ]);
+
+  const galleryPhotos = galleryPreview.length > 0
+    ? galleryPreview.map((img, i) => ({
+        src: img.url,
+        alt: img.alt,
+        h: galleryHeights[i % galleryHeights.length],
+      }))
+    : fallbackGalleryPhotos;
 
   return (
     <>
       {/* Hero */}
       <section className="min-h-svh bg-primary flex flex-col items-center justify-center text-center px-4 relative overflow-hidden">
         <Image
-          src="/images/restau-01.jpg"
+          src={heroImage}
           alt="La Belle Assiette"
           fill
           priority
